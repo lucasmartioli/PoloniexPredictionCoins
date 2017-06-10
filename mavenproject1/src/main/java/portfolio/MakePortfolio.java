@@ -11,7 +11,6 @@ import java.io.IOException;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import static java.util.Locale.ROOT;
-import loadingcompany.LoadingCoin;
 import model.Coin;
 import model.StockValues;
 import static neuralnetworks.TrainingNeuralNetwork.getMaxPrice;

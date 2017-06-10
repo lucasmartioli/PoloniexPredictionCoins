@@ -6,9 +6,12 @@
 package neuralnetworks;
 
 import java.io.File;
+import java.io.IOException;
 import static java.util.Calendar.getInstance;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.neuroph.core.NeuralNetwork;
 import static org.neuroph.core.NeuralNetwork.createFromFile;
 import org.neuroph.core.data.DataSet;
@@ -116,8 +119,13 @@ public class PredictionNeuralNetwork {
 
     public void toTrain(List<DataSetRow> dataSet) {
         File f = new File(fileNameNeuralNetwork);
-        if (f.exists())
-            return;
+        try {
+            System.out.println(f.getCanonicalPath());
+//        if (f.exists())
+//            return;
+        } catch (IOException ex) {
+            Logger.getLogger(PredictionNeuralNetwork.class.getName()).log(Level.SEVERE, null, ex);
+        }
                     
 //        System.out.println("Iniciando treinamento da rede " + fileNameNeuralNetwork);
         WeightsRandomizer randomizer = new WeightsRandomizer();

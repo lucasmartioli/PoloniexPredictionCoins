@@ -15,7 +15,7 @@ public class StringComparator implements Comparator<String> {
 
     @Override
     public int compare(String t, String t1) {
-        return t.compareToIgnoreCase(t1);
+        return t1.compareToIgnoreCase(t);
     }
     
 }
