@@ -6,8 +6,9 @@
 package model;
 
 import com.cf.data.model.poloniex.PoloniexChartData;
+import static java.lang.Math.pow;
 import java.util.ArrayList;
-import java.util.Collections;
+import static java.util.Collections.sort;
 import java.util.List;
 import technicalindicators.TechnicalIndicators;
 
@@ -15,15 +16,14 @@ import technicalindicators.TechnicalIndicators;
  *
  * @author Lucas
  */
-public class Coin {
+public class Coin implements Comparable<Coin>{
 
     private final String simbolo;
     private TechnicalIndicators technicalIndicators;
-    private StockValues currentValues;
     private ArrayList<StockValues> futureValues;
     private double accuracy;
 
-    private List<PoloniexChartData> historicValues;
+    private List<StockValues> historicValues;
     private double normalizerValue;
     private double variance;
 
@@ -39,11 +39,11 @@ public class Coin {
         this.technicalIndicators = new TechnicalIndicators(historicValues);
     }
 
-    public List<PoloniexChartData> getHistoricValues() {
+    public List<StockValues> getHistoricValues() {
         return historicValues;
     }
 
-    public void setHistoricValues(List<PoloniexChartData> historicValues) {
+    public void setHistoricValues(List<StockValues> historicValues) {
         this.historicValues = historicValues;
         this.calculateTechnicalIndicators();
         this.evaluateVariance();
@@ -51,14 +51,6 @@ public class Coin {
 
     public String getSimbolo() {
         return simbolo;
-    }
-
-    public StockValues getCurrentValues() {
-        return currentValues;
-    }
-
-    public void setCurrentValues(StockValues currentValues) {
-        this.currentValues = currentValues;
     }
 
     public double getNormalizerValue() {
@@ -82,7 +74,7 @@ public class Coin {
     }
 
     public void setFutureValues(ArrayList<StockValues> futureValues) {
-        Collections.sort(futureValues);
+        sort(futureValues);
 
 //        for (StockValues futureValue : futureValues) {
 //            System.out.println(futureValue.getDate().getTime());
@@ -109,7 +101,7 @@ public class Coin {
 
         double total = 0d;
         for (int i = 0; i < limit; i++) {
-            total += Math.pow(getTechnicalIndicators().getClosePrice().getValue(i).toDouble() - mean, 2);
+            total += pow(getTechnicalIndicators().getClosePrice().getValue(i).toDouble() - mean, 2);
         }
 
         variance = total / limit - 1;
@@ -118,7 +110,12 @@ public class Coin {
 
     @Override
     public String toString() {
-        return "Company{" + "simbolo=" + simbolo + ", futureValues=" + futureValues + ", normalizerValue=" + normalizerValue + ", variance=" + variance + '}';
+        return "Coin{" + "simbolo=" + simbolo + ", volume atual=" + historicValues.get(0).getVolume() + ", futureValues=" + futureValues + ", normalizerValue=" + normalizerValue + ", variance=" + variance + '}';
+    }
+
+    @Override
+    public int compareTo(Coin t) {
+        return historicValues.get(0).getVolume().compareTo(t.getHistoricValues().get(0).getVolume());
     }
 
 }

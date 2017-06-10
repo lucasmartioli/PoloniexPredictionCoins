@@ -6,16 +6,16 @@
 package neuralnetworks;
 
 import java.io.File;
-import java.util.Calendar;
+import static java.util.Calendar.getInstance;
 import java.util.List;
 import java.util.Random;
-
 import org.neuroph.core.NeuralNetwork;
+import static org.neuroph.core.NeuralNetwork.createFromFile;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
-import org.neuroph.util.NeuralNetworkType;
+import static org.neuroph.util.NeuralNetworkType.MULTI_LAYER_PERCEPTRON;
 import org.neuroph.util.TransferFunctionType;
 import org.neuroph.util.random.WeightsRandomizer;
 
@@ -38,7 +38,7 @@ public class PredictionNeuralNetwork {
         this.outputLength = outputLength;
         fileNameNeuralNetwork = companySymbol + neuralNetworkName + ".neuralnet";
         neuralNetwork = new MultiLayerPerceptron(transferFunctionType, inputLength, 2 * inputLength + 1, outputLength);
-        neuralNetwork.setNetworkType(NeuralNetworkType.MULTI_LAYER_PERCEPTRON);
+        neuralNetwork.setNetworkType(MULTI_LAYER_PERCEPTRON);
 
 
     }
@@ -48,7 +48,7 @@ public class PredictionNeuralNetwork {
         this.outputLength = outputLength;
         fileNameNeuralNetwork = companySymbol + neuralNetworkName + ".neuralnet";
         neuralNetwork = new MultiLayerPerceptron(transferFunctionType, inputLength, secondLayer, outputLength);
-        neuralNetwork.setNetworkType(NeuralNetworkType.MULTI_LAYER_PERCEPTRON);
+        neuralNetwork.setNetworkType(MULTI_LAYER_PERCEPTRON);
 
     }
 
@@ -57,7 +57,7 @@ public class PredictionNeuralNetwork {
         this.outputLength = outputLength;
         fileNameNeuralNetwork = companySymbol + neuralNetworkName + ".neuralnet";
         neuralNetwork = new MultiLayerPerceptron(transferFunctionType, inputLength, secondLayer, thirdLayer, outputLength);
-        neuralNetwork.setNetworkType(NeuralNetworkType.MULTI_LAYER_PERCEPTRON);
+        neuralNetwork.setNetworkType(MULTI_LAYER_PERCEPTRON);
 
     }
 
@@ -66,7 +66,7 @@ public class PredictionNeuralNetwork {
         this.outputLength = outputLength;
         fileNameNeuralNetwork = companySymbol + neuralNetworkName + ".neuralnet";
         neuralNetwork = new MultiLayerPerceptron(inputLength, 2 * inputLength + 1, outputLength);
-        neuralNetwork.setNetworkType(NeuralNetworkType.MULTI_LAYER_PERCEPTRON);
+        neuralNetwork.setNetworkType(MULTI_LAYER_PERCEPTRON);
 
     }
 
@@ -121,7 +121,7 @@ public class PredictionNeuralNetwork {
                     
 //        System.out.println("Iniciando treinamento da rede " + fileNameNeuralNetwork);
         WeightsRandomizer randomizer = new WeightsRandomizer();
-        Random random = new Random(Calendar.getInstance().getTimeInMillis());
+        Random random = new Random(getInstance().getTimeInMillis());
         randomizer.setRandomGenerator(random);
         neuralNetwork.randomizeWeights(randomizer);
 //        neuralNetwork.randomizeWeights();
@@ -145,7 +145,7 @@ public class PredictionNeuralNetwork {
     public double[] toPredict(double[] input) {
 //        System.out.println("Iniciando uso da rede " + fileNameNeuralNetwork + ".");
         NeuralNetwork neuralNetworkLoad;
-        neuralNetworkLoad = NeuralNetwork.createFromFile(fileNameNeuralNetwork);
+        neuralNetworkLoad = createFromFile(fileNameNeuralNetwork);
         neuralNetworkLoad.setInput(input);
         neuralNetworkLoad.calculate();
 

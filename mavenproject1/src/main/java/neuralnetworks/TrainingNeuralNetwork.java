@@ -9,13 +9,14 @@ import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.EMAIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.RSIIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
+import static java.lang.Math.abs;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import static java.math.RoundingMode.HALF_EVEN;
 import java.util.ArrayList;
 import java.util.List;
 import model.Coin;
 import org.neuroph.core.data.DataSetRow;
-import org.neuroph.util.TransferFunctionType;
+import static org.neuroph.util.TransferFunctionType.SIGMOID;
 import technicalindicators.TechnicalIndicators;
 
 /**
@@ -33,19 +34,19 @@ public class TrainingNeuralNetwork {
 
         TechnicalIndicators technicalIndicators = company.getTechnicalIndicators();
 
-        PredictionNeuralNetwork rsiNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "RSI", 3, 4, 1, TransferFunctionType.SIGMOID);
+        PredictionNeuralNetwork rsiNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "RSI", 3, 4, 1, SIGMOID);
         rsiNeuralNetwork.setLearningRateForLearning(0.6d);
         rsiNeuralNetwork.setMaxErrorForLearning(0.0001d);
         rsiNeuralNetwork.setMaxIterationsForLearning(10000);
         rsiNeuralNetwork.toTrain(getRSIDataSetTraining(initialIndex, finalIndex, technicalIndicators));
 
-        PredictionNeuralNetwork smaNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "SMA", 2, 3, 1, TransferFunctionType.SIGMOID);
+        PredictionNeuralNetwork smaNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "SMA", 2, 3, 1, SIGMOID);
         smaNeuralNetwork.setLearningRateForLearning(0.6d);
         smaNeuralNetwork.setMaxErrorForLearning(0.0001d);
         smaNeuralNetwork.setMaxIterationsForLearning(10000);
         smaNeuralNetwork.toTrain(getSMADataSetTraining(initialIndex, finalIndex, technicalIndicators));
 
-        PredictionNeuralNetwork macdNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "MACD", 2, 3, 1, TransferFunctionType.SIGMOID);
+        PredictionNeuralNetwork macdNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "MACD", 2, 3, 1, SIGMOID);
         macdNeuralNetwork.setLearningRateForLearning(0.6d);
         macdNeuralNetwork.setMaxErrorForLearning(0.0001d);
         macdNeuralNetwork.setMaxIterationsForLearning(10000);
@@ -55,7 +56,7 @@ public class TrainingNeuralNetwork {
         smaNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "SMA");
         macdNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "MACD");
 
-        PredictionNeuralNetwork prediction = new PredictionNeuralNetwork(company.getSimbolo(), "PREDICTION", 8, 17, 1, TransferFunctionType.SIGMOID);
+        PredictionNeuralNetwork prediction = new PredictionNeuralNetwork(company.getSimbolo(), "PREDICTION", 8, 17, 1, SIGMOID);
         prediction.setLearningRateForLearning(0.6d);
         prediction.setMaxErrorForLearning(0.0001d);
         prediction.setMaxIterationsForLearning(10000);
@@ -79,7 +80,7 @@ public class TrainingNeuralNetwork {
 
         List<DataSetRow> predictionDataSet = new ArrayList<>();
         for (int i = initialIndex; i < finalIndex - tradesForTraining; i++) {
-            DataSetRow row = new DataSetRow(TrainingNeuralNetwork.getInputToPREDICTIONNeuralNetwork(normalizerValue, macdNeuralNetwork, rsiNeuralNetwork, smaNeuralNetwork, technicalIndicators, i), TrainingNeuralNetwork.getExpectedOutpuToPREDICTIONNeuralNetwork(technicalIndicators, i, normalizerValue));
+            DataSetRow row = new DataSetRow(getInputToPREDICTIONNeuralNetwork(normalizerValue, macdNeuralNetwork, rsiNeuralNetwork, smaNeuralNetwork, technicalIndicators, i), getExpectedOutpuToPREDICTIONNeuralNetwork(technicalIndicators, i, normalizerValue));
             predictionDataSet.add(row);
         }
 
@@ -119,7 +120,7 @@ public class TrainingNeuralNetwork {
 
         List<DataSetRow> rsiDataSet = new ArrayList<>();
         for (int i = initialIndex; i < finalIndex; i++) {
-            DataSetRow row = new DataSetRow(TrainingNeuralNetwork.getInputToRSINeuralNetwork(technicalIndicators, i), TrainingNeuralNetwork.getExpectedOutpuToRSINeuralNetwork(technicalIndicators, i));
+            DataSetRow row = new DataSetRow(getInputToRSINeuralNetwork(technicalIndicators, i), getExpectedOutpuToRSINeuralNetwork(technicalIndicators, i));
             rsiDataSet.add(row);
         }
 
@@ -160,7 +161,7 @@ public class TrainingNeuralNetwork {
 
         List<DataSetRow> rsiDataSet = new ArrayList<>();
         for (int i = initialIndex; i < finalIndex; i++) {
-            DataSetRow row = new DataSetRow(TrainingNeuralNetwork.getInputToMACDNeuralNetwork(technicalIndicators, i), TrainingNeuralNetwork.getExpectedOutpuToMACDNeuralNetwork(technicalIndicators, i));
+            DataSetRow row = new DataSetRow(getInputToMACDNeuralNetwork(technicalIndicators, i), getExpectedOutpuToMACDNeuralNetwork(technicalIndicators, i));
             rsiDataSet.add(row);
         }
 
@@ -190,7 +191,7 @@ public class TrainingNeuralNetwork {
 
         Double macdLine = ema5.getValue(index).toDouble() - ema35.getValue(index).toDouble();
         Double signalLine = ema5.getValue(index).toDouble() - closePrice.getValue(index).toDouble();
-        Double diference = Math.abs(macdLine - signalLine);
+        Double diference = abs(macdLine - signalLine);
 
         result = INDICATIVO_TENDENCIA_LATERAL;
         if (diference > 0.001) {
@@ -210,7 +211,7 @@ public class TrainingNeuralNetwork {
 
         List<DataSetRow> smaDataSet = new ArrayList<>();
         for (int i = initialIndex; i < finalIndex; i++) {
-            DataSetRow row = new DataSetRow(TrainingNeuralNetwork.getInputToSMANeuralNetwork(technicalIndicators, i), TrainingNeuralNetwork.getExpectedOutpuToSMANeuralNetwork(technicalIndicators, i));
+            DataSetRow row = new DataSetRow(getInputToSMANeuralNetwork(technicalIndicators, i), getExpectedOutpuToSMANeuralNetwork(technicalIndicators, i));
             smaDataSet.add(row);
         }
 
@@ -265,7 +266,7 @@ public class TrainingNeuralNetwork {
 
     private static double normalizeMACDInput(double macdValue) {
         BigDecimal bd = new BigDecimal(macdValue / 10d);
-        bd.setScale(4, RoundingMode.HALF_EVEN);
+        bd.setScale(4, HALF_EVEN);
         return bd.doubleValue();
     }
 

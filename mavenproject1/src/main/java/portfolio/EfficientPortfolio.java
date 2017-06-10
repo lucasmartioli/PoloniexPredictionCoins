@@ -6,13 +6,15 @@
 package portfolio;
 
 import java.io.IOException;
+import static java.lang.System.out;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.jfree.chart.ChartFactory;
+import static java.util.Calendar.getInstance;
+import static java.util.TimeZone.getTimeZone;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -20,7 +22,8 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
+import static org.jfree.ui.RefineryUtilities.centerFrameOnScreen;
+import static portfolio.Portfolio.cabecExcel;
 
 /**
  *
@@ -36,9 +39,9 @@ public class EfficientPortfolio {
 
         for (int i = 0; i < 1; i++) {
 
-            Calendar di = Calendar.getInstance(TimeZone.getTimeZone("America/Sao Paulo"));
+            Calendar di = getInstance(getTimeZone("America/Sao Paulo"));
             di.set(15, 0, 1, 12, 0);
-            Calendar df = Calendar.getInstance(TimeZone.getTimeZone("America/Sao Paulo"));
+            Calendar df = getInstance(getTimeZone("America/Sao Paulo"));
             df.set(17, 1, 21, 12, 0);
 
             Period period = new Period(di, df, 0.99, 0.01);
@@ -48,7 +51,7 @@ public class EfficientPortfolio {
             try {
                 makePortfolio.make();
             } catch (IOException ex) {
-                Logger.getLogger(EfficientPortfolio.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(EfficientPortfolio.class.getName()).log(SEVERE, null, ex);
             }
 
             org.jfree.data.time.TimeSeries chartProfit = new org.jfree.data.time.TimeSeries("Profit");
@@ -64,13 +67,13 @@ public class EfficientPortfolio {
             double lucroDeInvestimento = 0d;
             double totalDeAccuracy = 0d;
             int totalDePortfolios = 0;
-            System.out.println(Portfolio.cabecExcel());
+            out.println(cabecExcel());
             for (Portfolio p : makePortfolio.getPortfolios()) {
                 if (p.getEstimatedProfit() > 0) {
                     lucroDeInvestimento += p.getProfit();
                     totalDeInvestimento += p.getInvestment();
                 }
-                System.out.println(p.toExcel());
+                out.println(p.toExcel());
 
                 lucroBruto += p.getProfit();
                 totalInvestimentoEfetuado += p.getInvestment();
@@ -106,7 +109,7 @@ public class EfficientPortfolio {
         /**
          * Creating the chart
          */
-        JFreeChart chart = ChartFactory.createTimeSeriesChart(
+        JFreeChart chart = createTimeSeriesChart(
                 "Portfolios", // title
                 "Date", // x-axis label
                 "R$", // y-axis label
@@ -133,7 +136,7 @@ public class EfficientPortfolio {
 
         frame.setContentPane(panel);
         frame.pack();
-        RefineryUtilities.centerFrameOnScreen(frame);
+        centerFrameOnScreen(frame);
         frame.setVisible(true);
     }
 

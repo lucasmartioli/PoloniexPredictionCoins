@@ -10,14 +10,19 @@ import eu.verdelhan.ta4j.Indicator;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import java.io.IOException;
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+import static java.lang.System.out;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.TimeZone;
+import static java.util.Calendar.getInstance;
+import static java.util.TimeZone.getTimeZone;
 import loadingcompany.LoadingCoin;
 import model.Coin;
-import neuralnetworks.TrainingNeuralNetwork;
-import org.jfree.chart.ChartFactory;
+import static neuralnetworks.TrainingNeuralNetwork.toPredict;
+import static neuralnetworks.TrainingNeuralNetwork.toTrain;
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -25,7 +30,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
+import static org.jfree.ui.RefineryUtilities.centerFrameOnScreen;
 import technicalindicators.TechnicalIndicators;
 
 /**
@@ -40,9 +45,9 @@ public class TestsResults {
         ArrayList<String> companies = new ArrayList<>();
 
         try {
-            Calendar di = Calendar.getInstance(TimeZone.getTimeZone("America/Sao Paulo"));
+            Calendar di = getInstance(getTimeZone("America/Sao Paulo"));
             di.set(14, 6, 1, 12, 0);
-            Calendar df = Calendar.getInstance(TimeZone.getTimeZone("America/Sao Paulo"));
+            Calendar df = getInstance(getTimeZone("America/Sao Paulo"));
             df.set(16, 9, 1, 12, 0);
 
             Coin company = LoadingCoin.loading("VALE3", di, df);
@@ -57,11 +62,11 @@ public class TestsResults {
             TimeSeriesCollection dataset = new TimeSeriesCollection();
 
             int inicioTreinamento = indicadorInicial;
-            int finalTreinamento = Math.round(((float) (indicadorFinal * 0.88d)));
+            int finalTreinamento = round(((float) (indicadorFinal * 0.88d)));
             int inicioTestes = finalTreinamento + 1;
             int finalTestes = indicadorFinal;
 
-            TrainingNeuralNetwork.toTrain(company, inicioTreinamento, finalTreinamento, normalizerValue);
+            toTrain(company, inicioTreinamento, finalTreinamento, normalizerValue);
 
             org.jfree.data.time.TimeSeries chartResultados = new org.jfree.data.time.TimeSeries("Calculado");
             org.jfree.data.time.TimeSeries chartCP = new org.jfree.data.time.TimeSeries("Real");
@@ -78,7 +83,7 @@ public class TestsResults {
             double diferencaTotal = 0d;
             for (int i = inicioTestes; i < finalTestes;) {
 
-                double saida = TrainingNeuralNetwork.toPredict(company, i, normalizerValue);
+                double saida = toPredict(company, i, normalizerValue);
 //                System.out.println("Saida do algoritmo: " + saida);
 //                System.out.println("");
 //                System.out.println("Dia sendo analisado: " + timeSeries.getTick(i));
@@ -99,7 +104,7 @@ public class TestsResults {
                     chartM18.add(new Day(timeSeries.getTick(i - 1).getEndTime().toDate()), company.getTechnicalIndicators().getSma18days().getValue(i - 1).toDouble());
                     chartM18.add(new Day(timeSeries.getTick(i - 2).getEndTime().toDate()), company.getTechnicalIndicators().getSma18days().getValue(i - 2).toDouble());
                     chartDiferencas.add(new Day(tick.getEndTime().toDate()), saida - timeSeries.getTick(i).getClosePrice().toDouble());
-                    diferencaTotal += Math.abs(saida - timeSeries.getTick(i).getClosePrice().toDouble());
+                    diferencaTotal += abs(saida - timeSeries.getTick(i).getClosePrice().toDouble());
                     if ((anteriorCalculado < saida) && (anteriorReal < timeSeries.getTick(i).getClosePrice().toDouble())
                             || (anteriorCalculado > saida) && (anteriorReal > timeSeries.getTick(i).getClosePrice().toDouble())) {
                         acerto += 1;
@@ -116,8 +121,8 @@ public class TestsResults {
 //                System.out.println("");
             }
 
-            System.out.println("Total de testes: " + totalTests + " Total de acertos: " + acerto + " Diferença total: " + diferencaTotal);
-            System.out.println("Percentual de acertos: " + (acerto / totalTests) * 100d + "%");
+            out.println("Total de testes: " + totalTests + " Total de acertos: " + acerto + " Diferença total: " + diferencaTotal);
+            out.println("Percentual de acertos: " + (acerto / totalTests) * 100d + "%");
 //            System.out.println(company2 + "\t" + (acerto / totalTests) * 100d);
 
 //            System.out.println("Média de diferença: " + (diferencaTotal / totalTests));
@@ -140,7 +145,7 @@ public class TestsResults {
             /**
              * Creating the chart
              */
-            JFreeChart chart = ChartFactory.createTimeSeriesChart(
+            JFreeChart chart = createTimeSeriesChart(
                     company.getSimbolo() + " - " + tradesToPredict + " trades", // title
                     "Date", // x-axis label
                     "Price Per Unit", // y-axis label
@@ -183,7 +188,7 @@ public class TestsResults {
 
         frame.setContentPane(panel);
         frame.pack();
-        RefineryUtilities.centerFrameOnScreen(frame);
+        centerFrameOnScreen(frame);
         frame.setVisible(true);
     }
 

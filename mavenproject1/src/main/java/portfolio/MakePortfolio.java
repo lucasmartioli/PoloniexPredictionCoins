@@ -8,21 +8,15 @@ package portfolio;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import java.io.IOException;
+import static java.lang.System.out;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
+import static java.util.Locale.ROOT;
 import loadingcompany.LoadingCoin;
 import model.Coin;
 import model.StockValues;
-import neuralnetworks.TrainingNeuralNetwork;
-import org.jfree.data.time.Day;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.ojalgo.finance.portfolio.MarkowitzModel;
-import org.ojalgo.finance.portfolio.PortfolioContext;
-import stocksprediction.StocksPrediction;
-import technicalindicators.TechnicalIndicators;
+import static neuralnetworks.TrainingNeuralNetwork.getMaxPrice;
+import static neuralnetworks.TrainingNeuralNetwork.toPredict;
+import static neuralnetworks.TrainingNeuralNetwork.toTrain;
 
 /**
  *
@@ -88,19 +82,19 @@ public class MakePortfolio {
         companies = new ArrayList<>();
 
         for (String companySymbol : companySymbols) {
-            System.out.println("Testes para " + companySymbol + " iniciados.");
+            out.println("Testes para " + companySymbol + " iniciados.");
 
             Coin company = LoadingCoin.loading(companySymbol, period.getDateInitial(), period.getDateFinal());
 
             TimeSeries timeSeries = company.getTechnicalIndicators().getTimeSeries();
             int indicadorInicial = timeSeries.getBegin();
             int indicadorFinal = timeSeries.getEnd();
-            company.setNormalizerValue(TrainingNeuralNetwork.getMaxPrice(company.getTechnicalIndicators()));
+            company.setNormalizerValue(getMaxPrice(company.getTechnicalIndicators()));
 
             indicadorInicial += 36; // desconsiderando valores iniciais onde os indicadores não fazem sentido, pois ainda não tem informações suficientes
             
-            TrainingNeuralNetwork.toTrain(company, indicadorInicial, indicadorFinal, company.getNormalizerValue());
-            double anteriorCalculado = TrainingNeuralNetwork.toPredict(company, indicadorInicial - tradesToPredict, company.getNormalizerValue());
+            toTrain(company, indicadorInicial, indicadorFinal, company.getNormalizerValue());
+            double anteriorCalculado = toPredict(company, indicadorInicial - tradesToPredict, company.getNormalizerValue());
             double anteriorReal = timeSeries.getTick(indicadorInicial - tradesToPredict).getClosePrice().toDouble();
             double totalTests = 0d;
             double acerto = 0d;
@@ -109,7 +103,7 @@ public class MakePortfolio {
             for (int i = indicadorInicial; i < indicadorFinal;) {
 //                System.out.println("Lu" + timeSeries.getTick(i).getEndTime().toCalendar(Locale.ROOT).getTime());
 
-                double saida = TrainingNeuralNetwork.toPredict(company, i, company.getNormalizerValue());
+                double saida = toPredict(company, i, company.getNormalizerValue());
 
                 Tick tick = timeSeries.getTick(i);
 
@@ -121,12 +115,12 @@ public class MakePortfolio {
                 if (indicadorFinal - 1 == i) {
 
                     StockValues futureStockValue;
-                    System.out.println(tick.toString());
+                    out.println(tick.toString());
 //                    if (anteriorCalculado == 0d) {
 //                        futureStockValue = new StockValues(timeSeries.getTick(i).getEndTime().toCalendar(Locale.ROOT), timeSeries.getTick(i).getClosePrice().toDouble(), saida, tick.getClosePrice().toDouble());
 //                    } else {
 //                    System.out.println(timeSeries.getTick(i).toString());
-                    futureStockValue = new StockValues(timeSeries.getTick(i).getEndTime().toCalendar(Locale.ROOT), timeSeries.getTick(i).getClosePrice().toDouble(), saida, anteriorCalculado, tick.getClosePrice().toDouble());
+                    futureStockValue = new StockValues(timeSeries.getTick(i).getEndTime().toCalendar(ROOT), timeSeries.getTick(i).getClosePrice().toDouble(), saida, anteriorCalculado, tick.getClosePrice().toDouble());
 //                    }
                     double increase = ((saida - timeSeries.getTick(i).getClosePrice().toDouble()) / timeSeries.getTick(i).getClosePrice().toDouble()) * 100d;
                     futureStockValue.setIncrease(increase);
@@ -146,11 +140,11 @@ public class MakePortfolio {
 
             double accuracy = acerto / totalTests;
             company.setAccuracy(accuracy);
-            System.out.println(accuracy);
+            out.println(accuracy);
 
             company.setFutureValues(futureValues);
             companies.add(company);
-            System.out.println("Finalizado.");
+            out.println("Finalizado.");
         }
 
     }

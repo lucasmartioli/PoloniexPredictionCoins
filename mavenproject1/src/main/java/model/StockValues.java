@@ -6,8 +6,8 @@
 package model;
 
 import com.cf.data.model.poloniex.PoloniexChartData;
-import java.math.BigDecimal;
 import java.util.Calendar;
+import static java.util.Calendar.getInstance;
 
 /**
  *
@@ -16,7 +16,6 @@ import java.util.Calendar;
 public class StockValues implements Comparable<StockValues>{
 
     private Calendar date;
-
     private Double open;
     private Double low;
     private Double high;
@@ -25,17 +24,19 @@ public class StockValues implements Comparable<StockValues>{
     private Double beforeClose;
     private Double beforeRealClose;
     private Double increase;
-
-    //private BigDecimal adjClose;
     private Long volume;
 
     public StockValues(PoloniexChartData h) {
-        this.date = Calendar.getInstance();
-        this.date.setTimeInMillis(Long.getLong(h.date));
+        Double v;
+        this.date = getInstance();
+        v = new Double(h.date);
+        this.date.setTimeInMillis((v.longValue()*1000l));
         this.open = new Double(h.open);
         this.low = new Double(h.low);
-        this.volume = new Long(h.volume);
+        v = new Double(h.volume.replace(".", ""));
+        this.volume = v.longValue();
         this.high = new Double(h.high);
+        this.close = new Double(h.close);
 
     }
 

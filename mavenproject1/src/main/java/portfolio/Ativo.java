@@ -5,6 +5,7 @@
  */
 package portfolio;
 
+import static java.lang.Double.compare;
 import model.StockValues;
 
 /**
@@ -43,7 +44,7 @@ public class Ativo implements Comparable<Ativo> {
 
     @Override
     public int compareTo(Ativo t) {
-        return Double.compare(values.getIncrease() + variance, t.getValues().getIncrease() + t.getVariance());
+        return compare(values.getIncrease() + variance, t.getValues().getIncrease() + t.getVariance());
     }
 
     @Override

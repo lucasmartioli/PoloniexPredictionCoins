@@ -8,7 +8,6 @@ package portfolio;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -76,9 +75,9 @@ public class Portfolio {
         int t = 0;
 
         for (Ativo ativo : ativos) {
-            profit += ((ativo.getValues().getClose().doubleValue() - ativo.getValues().getBeforeRealClose().doubleValue())) * amountsAtivos.get(ativo.getSymbol());
-            estimatedProfit += ((ativo.getValues().getPredictedClose().doubleValue() - ativo.getValues().getBeforeClose().doubleValue()) / ativo.getValues().getBeforeClose().doubleValue()) * amountsAtivos.get(ativo.getSymbol());
-            investment += ativo.getValues().getBeforeRealClose().doubleValue() * amountsAtivos.get(ativo.getSymbol());            
+            profit += ((ativo.getValues().getClose() - ativo.getValues().getBeforeRealClose())) * amountsAtivos.get(ativo.getSymbol());
+            estimatedProfit += ((ativo.getValues().getPredictedClose() - ativo.getValues().getBeforeClose()) / ativo.getValues().getBeforeClose()) * amountsAtivos.get(ativo.getSymbol());
+            investment += ativo.getValues().getBeforeRealClose() * amountsAtivos.get(ativo.getSymbol());            
             variance += ativo.getVariance() * amountsAtivos.get(ativo.getSymbol());
             accuracy += ativo.getAccuracy() * amountsAtivos.get(ativo.getSymbol());
             if (amountsAtivos.get(ativo.getSymbol()) > 0) {

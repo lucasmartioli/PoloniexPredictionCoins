@@ -6,10 +6,6 @@
 package technicalindicators;
 
 import com.cf.data.model.poloniex.PoloniexChartData;
-import java.util.ArrayList;
-import java.util.List;
-import eu.verdelhan.ta4j.Decimal;
-import eu.verdelhan.ta4j.Indicator;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -19,6 +15,10 @@ import eu.verdelhan.ta4j.indicators.trackers.ROCIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.RSIIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 import eu.verdelhan.ta4j.indicators.volume.OnBalanceVolumeIndicator;
+import static java.lang.Long.parseLong;
+import java.util.ArrayList;
+import java.util.List;
+import model.StockValues;
 import org.joda.time.DateTime;
 
 /**
@@ -46,14 +46,14 @@ public class TechnicalIndicators {
     private final ROCIndicator roc5days;
     private final OnBalanceVolumeIndicator obv;
 
-    public TechnicalIndicators(List<PoloniexChartData> historic) {
+    public TechnicalIndicators(List<StockValues> historic) {
 
         ArrayList<Tick> tickList = new ArrayList<>();
         for (int j = historic.size() - 1; j > 0; j--) {
-            PoloniexChartData historicalQuote = historic.get(j);
+            StockValues historicalQuote = historic.get(j);
 
-            DateTime date = new DateTime(Long.parseLong(historicalQuote.date));
-            Tick dado = new Tick(date, historicalQuote.open, historicalQuote.high, historicalQuote.low, historicalQuote.close, historicalQuote.volume);
+            DateTime date = new DateTime(historicalQuote.getDate());
+            Tick dado = new Tick(date, historicalQuote.getOpen(), historicalQuote.getHigh(), historicalQuote.getLow(), historicalQuote.getClose(), historicalQuote.getVolume());
 
             tickList.add(dado);
         }

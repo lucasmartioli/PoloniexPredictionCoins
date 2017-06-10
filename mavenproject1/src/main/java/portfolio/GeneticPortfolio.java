@@ -6,7 +6,7 @@
 package portfolio;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import static java.util.Calendar.getInstance;
 import java.util.Random;
 
 /**
@@ -48,7 +48,7 @@ public class GeneticPortfolio {
 
     private void intializePopulation() {
 
-        Random gerador = new Random(Calendar.getInstance().getTimeInMillis());
+        Random gerador = new Random(getInstance().getTimeInMillis());
         population = new ArrayList<>();
 
         for (int i = 0; i < populationSize; i++) {
@@ -100,7 +100,7 @@ public class GeneticPortfolio {
 
         Portfolio best = findBestSolutionInPopulation();
 
-        Random gerador = new Random(Calendar.getInstance().getTimeInMillis());
+        Random gerador = new Random(getInstance().getTimeInMillis());
 
         ArrayList<Portfolio> generation = new ArrayList<>();
 
@@ -118,7 +118,7 @@ public class GeneticPortfolio {
 
         Portfolio p3 = new Portfolio();
 
-        Random gerador = new Random(Calendar.getInstance().getTimeInMillis());
+        Random gerador = new Random(getInstance().getTimeInMillis());
 
         int lineCross = gerador.nextInt(portfolioSize);
 

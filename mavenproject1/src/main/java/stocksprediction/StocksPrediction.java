@@ -5,22 +5,6 @@
  */
 package stocksprediction;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Formatter;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import loadingcompany.LoadingCoin;
-import model.Coin;
-import model.CoinList;
-import neuralnetworks.PredictionNeuralNetwork;
-import neuralnetworks.TrainingNeuralNetwork;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 /**
  *
  * @author Lucas
