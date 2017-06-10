@@ -24,7 +24,7 @@ public class StockValues implements Comparable<StockValues>{
     private Double beforeClose;
     private Double beforeRealClose;
     private Double increase;
-    private Long volume;
+    private Double volume;
 
     public StockValues(PoloniexChartData h) {
         Double v;
@@ -32,9 +32,8 @@ public class StockValues implements Comparable<StockValues>{
         v = new Double(h.date);
         this.date.setTimeInMillis((v.longValue()*1000l));
         this.open = new Double(h.open);
-        this.low = new Double(h.low);
-        v = new Double(h.volume.replace(".", ""));
-        this.volume = v.longValue();
+        this.low = new Double(h.low);        
+        this.volume = new Double(h.volume);;
         this.high = new Double(h.high);
         this.close = new Double(h.close);
 
@@ -101,11 +100,11 @@ public class StockValues implements Comparable<StockValues>{
         this.close = close;
     }
 
-    public Long getVolume() {
+    public Double getVolume() {
         return volume;
     }
 
-    public void setVolume(Long volume) {
+    public void setVolume(Double volume) {
         this.volume = volume;
     }
 

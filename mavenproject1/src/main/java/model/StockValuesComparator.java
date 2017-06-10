@@ -15,7 +15,7 @@ public class StockValuesComparator implements Comparator<StockValues> {
 
     @Override
     public int compare(StockValues t, StockValues t1) {
-        return t.compareTo(t1);
+        return t1.compareTo(t);
     }
     
 }

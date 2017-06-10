@@ -16,7 +16,7 @@ public class CoinVolumeComparator implements Comparator<Coin>{
 
     @Override
     public int compare(Coin t, Coin t1) {
-        return t.compareTo(t1);
+        return t1.compareTo(t);
     }
     
 }
