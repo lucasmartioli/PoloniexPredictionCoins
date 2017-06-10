@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import static java.util.Calendar.getInstance;
 import static java.util.TimeZone.getTimeZone;
-import loadingcompany.LoadingCoin;
 import model.Coin;
 import static neuralnetworks.TrainingNeuralNetwork.toPredict;
 import static neuralnetworks.TrainingNeuralNetwork.toTrain;
