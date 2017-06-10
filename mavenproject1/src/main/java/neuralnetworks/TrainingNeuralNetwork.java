@@ -35,31 +35,31 @@ public class TrainingNeuralNetwork {
         TechnicalIndicators technicalIndicators = company.getTechnicalIndicators();
 
         PredictionNeuralNetwork rsiNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "RSI", 3, 4, 1, SIGMOID);
-        rsiNeuralNetwork.setLearningRateForLearning(0.6d);
-        rsiNeuralNetwork.setMaxErrorForLearning(0.0001d);
-        rsiNeuralNetwork.setMaxIterationsForLearning(10000);
+        rsiNeuralNetwork.setLearningRateForLearning(0.9d);
+        rsiNeuralNetwork.setMaxErrorForLearning(0.000001d);
+        rsiNeuralNetwork.setMaxIterationsForLearning(15000);
         rsiNeuralNetwork.toTrain(getRSIDataSetTraining(initialIndex, finalIndex, technicalIndicators));
 
         PredictionNeuralNetwork smaNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "SMA", 2, 3, 1, SIGMOID);
-        smaNeuralNetwork.setLearningRateForLearning(0.6d);
-        smaNeuralNetwork.setMaxErrorForLearning(0.0001d);
-        smaNeuralNetwork.setMaxIterationsForLearning(10000);
+        smaNeuralNetwork.setLearningRateForLearning(0.9d);
+        smaNeuralNetwork.setMaxErrorForLearning(0.000001d);
+        smaNeuralNetwork.setMaxIterationsForLearning(15000);
         smaNeuralNetwork.toTrain(getSMADataSetTraining(initialIndex, finalIndex, technicalIndicators));
 
         PredictionNeuralNetwork macdNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "MACD", 2, 3, 1, SIGMOID);
-        macdNeuralNetwork.setLearningRateForLearning(0.6d);
-        macdNeuralNetwork.setMaxErrorForLearning(0.0001d);
-        macdNeuralNetwork.setMaxIterationsForLearning(10000);
+        macdNeuralNetwork.setLearningRateForLearning(0.9d);
+        macdNeuralNetwork.setMaxErrorForLearning(0.000001d);
+        macdNeuralNetwork.setMaxIterationsForLearning(15000);
         macdNeuralNetwork.toTrain(getMACDDataSetTraining(initialIndex, finalIndex, technicalIndicators));
 
         rsiNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "RSI");
         smaNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "SMA");
         macdNeuralNetwork = new PredictionNeuralNetwork(company.getSimbolo(), "MACD");
 
-        PredictionNeuralNetwork prediction = new PredictionNeuralNetwork(company.getSimbolo(), "PREDICTION", 8, 17, 1, SIGMOID);
-        prediction.setLearningRateForLearning(0.6d);
-        prediction.setMaxErrorForLearning(0.0001d);
-        prediction.setMaxIterationsForLearning(10000);
+        PredictionNeuralNetwork prediction = new PredictionNeuralNetwork(company.getSimbolo(), "PREDICTION", 8, 19, 1, SIGMOID);
+        prediction.setLearningRateForLearning(0.8d);
+        prediction.setMaxErrorForLearning(0.0000001d);
+        prediction.setMaxIterationsForLearning(15000);
         prediction.toTrain(getPREDICTIONDataSetTraining(initialIndex, finalIndex, technicalIndicators, rsiNeuralNetwork, smaNeuralNetwork, macdNeuralNetwork, normalizerValue));
     }
 
