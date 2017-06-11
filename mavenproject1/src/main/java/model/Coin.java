@@ -5,7 +5,6 @@
  */
 package model;
 
-import com.cf.data.model.poloniex.PoloniexChartData;
 import static java.lang.Math.pow;
 import java.util.ArrayList;
 import static java.util.Collections.sort;
@@ -22,6 +21,24 @@ public class Coin implements Comparable<Coin>{
     private TechnicalIndicators technicalIndicators;
     private ArrayList<StockValues> futureValues;
     private double accuracy;
+    private double tendenciaDeCompra;
+    
+    public boolean equal(Coin coin) {
+        return (simbolo == null ? coin.getSimbolo() == null : simbolo.equals(coin.getSimbolo()));
+    }   
+    
+    public void addTendenciaDeCompra(double i) {
+        tendenciaDeCompra+=i;
+    }
+            
+
+    public double getTendenciaDeCompra() {
+        return tendenciaDeCompra;
+    }
+
+    public void setTendenciaDeCompra(double tendenciaDeCompra) {
+        this.tendenciaDeCompra = tendenciaDeCompra;
+    }
 
     private List<StockValues> historicValues;
     private double normalizerValue;
@@ -115,7 +132,7 @@ public class Coin implements Comparable<Coin>{
 
     @Override
     public int compareTo(Coin t) {
-        return historicValues.get(0).getVolume().compareTo(t.getHistoricValues().get(0).getVolume());
+        return technicalIndicators.getObv().getValue(technicalIndicators.getTimeSeries().getEnd()).compareTo(t.getTechnicalIndicators().getObv().getValue(t.getTechnicalIndicators().getTimeSeries().getEnd()));
     }
 
 }

@@ -5,7 +5,6 @@
  */
 package technicalindicators;
 
-import com.cf.data.model.poloniex.PoloniexChartData;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
@@ -15,7 +14,6 @@ import eu.verdelhan.ta4j.indicators.trackers.ROCIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.RSIIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 import eu.verdelhan.ta4j.indicators.volume.OnBalanceVolumeIndicator;
-import static java.lang.Long.parseLong;
 import java.util.ArrayList;
 import java.util.List;
 import model.StockValues;
